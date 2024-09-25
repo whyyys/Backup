@@ -35,7 +35,7 @@ int main()
     {
         objects.push_back(new DerivedClass(i + 1));
     }
-    for (int i = 0; i <= size; ++i)
+    for (int i = 0; i < size; ++i)
     { // 此处应该是 < ⽽不是 <=
         objects[i]->printInfo();
         objects[i]->divideBy(i+1); // 此处应该是 i + 1 ⽽不是 i
