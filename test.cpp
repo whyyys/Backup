@@ -46,4 +46,4 @@ int main()
         delete obj;
     }
     return 0;
-}
+}test
