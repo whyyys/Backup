@@ -39,12 +39,10 @@ int main()
     { // 此处应该是 < ⽽不是 <=
         objects[i]->printInfo();
         objects[i]->divideBy(i+1); // 此处应该是 i + 1 ⽽不是 i
-        adsfd;
     }
     for (BaseClass *obj : objects)
     {
         delete obj;
     }
     return 0;
-}test
-asdflkjasdf0
+}
