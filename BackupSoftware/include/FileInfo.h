@@ -44,6 +44,7 @@ struct BackupInfo
     char backup_path[MAX_PATH_LEN]; // 备份路径
     char comment[COMMENT_SIZE];     // 描述信息
     unsigned char mod;              // 压缩加密选项
+    uint32_t checksum;              //校验和
 };
 
 #define BACKUP_INFO_SIZE (sizeof(BackupInfo))

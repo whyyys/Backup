@@ -29,8 +29,8 @@ find_package(OpenSSL REQUIRED)
 # 添加 OpenSSL 的头文件路径
 include_directories(${OPENSSL_INCLUDE_DIR})
 
-message(STATUS "OpenSSL Include Dir: ${OPENSSL_INCLUDE_DIR}")
-message(STATUS "OpenSSL Libraries: ${OPENSSL_LIBRARIES}")
+# message(STATUS "OpenSSL Include Dir: ${OPENSSL_INCLUDE_DIR}")
+# message(STATUS "OpenSSL Libraries: ${OPENSSL_LIBRARIES}")
 
 # 添加测试源文件，生成一个名为runTests的可执行文件
 add_executable(runTests 

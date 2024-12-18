@@ -94,7 +94,8 @@ bool Packer::Pack()
         time(NULL),                // 当前时间戳
         {0},                       // 确保 backup_path 初始化为空字符
         {0},                       // 确保 comment 初始化为空字符
-        0                           // 压缩加密选项
+        0,                         // 压缩加密选项
+        0                          // 校验码
     };
 
     // 安全地拷贝路径和评论
@@ -106,6 +107,8 @@ bool Packer::Pack()
 
     info.mod = 0;  // 压缩加密选项，假设为 0
 
+    info.checksum = 0; // 这里不进行文件校验
+
     bak_file.WriteBackupInfo(info); 
 
     // 切换工作目录
@@ -114,7 +117,6 @@ bool Packer::Pack()
     DfsFile(bak_file, fs::relative(root_path, root_path.parent_path()));
 
     bak_file.close();
-    // bak_file.CalculateFileChecksum();
     return true;
 }
 
