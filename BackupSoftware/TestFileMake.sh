@@ -1,5 +1,7 @@
 #!/bin/bash
 
+rm -rf tests/AFolder
+
 # 设置工作目录
 WORKDIR="/home/why/Backup/BackupSoftware/tests/AFolder"
 mkdir -p $WORKDIR
@@ -32,10 +34,40 @@ mknod block_device_file b 8 0
 
 # 7. 创建目录
 mkdir -p folder/subfolder
+mkdir large_folder
+
+# 创建被过滤的文件夹和文件
+mkdir .ignore_folder
+echo "This is a text file inside ignore folder." > .ignore_folder/hidden_file.txt
+echo "This is a ignore file." > ignore.txt
 
 # 创建大文件tar包 gz包
-tar -cPf folder/subfolder/documents.tar /home/why/Backup/Insruction/
-tar -czPf folder/subfolder/documents.tar.gz /home/why/Backup/Insruction/
+
+# 设置文件和目录路径
+output_dir="./large_folder"      # 输出文件存放目录
+random_file="random_large_file"  # 随机文件名
+tar_file="random_large_file.tar"  # tar文件名
+gz_file="random_large_file.tar.gz" # tar.gz文件名
+file_size="2MB"             # 文件大小，这里设置为 100MB（可以根据需要修改）
+
+# 创建输出目录
+mkdir -p "$output_dir"
+
+# 创建一个随机的文件 (100MB 大小)
+dd if=/dev/urandom of="$output_dir/$random_file" bs=1M count=2
+
+# 打包成 tar 文件
+tar -cf "$output_dir/$tar_file" -C "$output_dir" "$random_file"
+
+# 打包成 tar.gz 文件
+tar -czf "$output_dir/$gz_file" -C "$output_dir" "$random_file"
+
+# 输出结果
+echo "随机文件创建并打包成功!"
+echo "原始文件: $output_dir/$random_file"
+echo "tar 包: $output_dir/$tar_file"
+echo "tar.gz 包: $output_dir/$gz_file"
+
 
 # 输出提示信息
 echo "各种文件已成功创建："

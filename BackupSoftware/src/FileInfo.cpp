@@ -201,7 +201,7 @@ bool FileInfo::CalculateFileChecksum()
         checksum += static_cast<uint32_t>(buffer[i]);
     }
 
-    // file.close();
+    file.close();
 
     // 计算校验码的负值并写到文件末尾
     uint32_t checksum_to_write = -checksum; // 校验码是负的校验和
@@ -213,6 +213,6 @@ bool FileInfo::CalculateFileChecksum()
 
     // 将校验和追加到文件末尾
     outfile.write(reinterpret_cast<const char *>(&checksum_to_write), sizeof(checksum_to_write));
-    // outfile.close();
+    outfile.close();
     return true;
 }

@@ -23,6 +23,15 @@ find_package(GTest REQUIRED)
 # 添加GTest的include目录
 include_directories(${GTEST_INCLUDE_DIRS})
 
+# 查找 OpenSSL 库
+find_package(OpenSSL REQUIRED)
+
+# 添加 OpenSSL 的头文件路径
+include_directories(${OPENSSL_INCLUDE_DIR})
+
+message(STATUS "OpenSSL Include Dir: ${OPENSSL_INCLUDE_DIR}")
+message(STATUS "OpenSSL Libraries: ${OPENSSL_LIBRARIES}")
+
 # 添加测试源文件，生成一个名为runTests的可执行文件
 add_executable(runTests 
     tests/test_packer.cpp
@@ -33,9 +42,10 @@ add_executable(runTests
 # 链接静态库, gtest库和pthread库到可执行文件runTests
 # gtest框架在实现上使用了多线程（pthread）来管理测试并发执行
 target_link_libraries(runTests 
-    ${GTEST_LIBRARIES} 
-    pthread 
     backup_functions
+    ${GTEST_LIBRARIES} 
+    ${OPENSSL_LIBRARIES}
+    pthread 
 )
 
 # 启用测试功能

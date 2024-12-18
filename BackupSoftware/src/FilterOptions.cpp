@@ -72,7 +72,7 @@ bool FilterOptions::Check(const FileHeader &file_header_)
     }
 
     // 文件名匹配
-    if ((type & FILTER_FILE_NAME) && (cur_file_type != FILE_TYPE_DIRECTORY))
+    if (type & FILTER_FILE_NAME)
     {
         std::regex reg(reg_name);
         fs::path file_path(file_header_.name);

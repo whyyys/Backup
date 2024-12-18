@@ -6,7 +6,7 @@ void Packer::DfsFile(FileInfo &bak_file, fs::path cur_path)
     FileHeader fileheader = file.GetFileHeader();
     // 过滤规则判断
     bool file_status = filter.Check(fileheader);
-    if(!file_status) return;
+    if(file_status) return;
 
     // 硬链接 第二次检测到同一个inode时视为硬链接
     if(file.IsHardLink())
