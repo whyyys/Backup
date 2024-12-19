@@ -8,6 +8,7 @@
 #include "Compression.h"
 #include "Encryption.h"
 #include "FilterOptions.h"
+#include "Backup_Functions.h"
 namespace fs = std::filesystem;
 
 bool check_file_content(const fs::path& path1, const fs::path& path2);
@@ -38,6 +39,9 @@ protected:
         // 初始化 FilterOptions 对象
         filter = FilterOptions(); // 使用默认构造函数初始化
         filter.SetNameFilter(filter_regex_);
+
+        // 创建解包文件夹
+        fs::create_directory(restore_path);
     }
     void TearDown() override{
 
@@ -179,6 +183,84 @@ TEST_F(BackupTest, EncryptDecryptTest) {
     EXPECT_TRUE(check_file_content(cmpfile, bakfile)) << "Decrypted file content mismatch!";
 
     std::cout << "Eecryption and decryption test completed successfully!" << std::endl;
+}
+
+// 测试整体封装功能
+TEST_F(BackupTest, TotalTest) {
+    // 清理临时目录
+    fs::remove_all("/home/why/Backup/BackupSoftware/tests/dst_file");
+    fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore/AFolder");
+
+    std::string comment = "Test all functions.";
+    std::string password = randomPassword(8);
+    BackupFunctions task(root_path, dst_path, "", "", comment, password);
+
+    // 设置信息
+    task.SetFilter(filter);
+    task.SetMod(MOD_COMPRESS | MOD_ENCRYPT);
+    
+    // 首先执行打包
+    EXPECT_TRUE(task.CreateBackup()) << "Operate failed!";
+
+    //输出过程信息
+    std::cout << "------Pack information------" << std::endl;
+    std::vector<std::string> outinfo = task.Getoutinfo();
+    for (const auto& str : outinfo) {
+        std::cout << str << std::endl;
+    }
+
+    // 检查打包后的文件是否存在
+    EXPECT_TRUE(fs::exists(eptfile)) << "File does not exist after test all functions!";
+
+    // 执行解包
+    BackupFunctions task_2("", "", restore_path, eptfile, "", password);
+    EXPECT_TRUE(task_2.RestoreBackup()) << "Unpacking failed!";
+
+    //输出过程信息
+    std::cout << "-----Unpack information------" << std::endl;
+    std::vector<std::string> outinfo_2 = task_2.Getoutinfo();
+    for (const auto& str : outinfo_2) {
+        std::cout << str << std::endl;
+    }
+    
+    // 检查文件是否恢复到原始位置
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "regular_file1.txt")) << "regular_file1.txt not unpacked!";
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "regular_file2.txt")) << "regular_file2.txt not unpacked!";
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "folder/inside_file.txt")) << "inside_file.txt not unpacked!";
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "folder/subfolder")) << "subfolder not unpacked!";
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "large_folder/random_large_file")) << "random_large_file not unpacked!";
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "large_folder/random_large_file.tar")) << "random_large_file.tar not unpacked!";
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "large_folder/random_large_file.tar.gz")) << "random_large_file.tar.gz not unpacked!";
+
+    // 检查软链接是否正确恢复
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "symlink_file_1.txt")) << "symlink_file_1.txt not unpacked!";
+    EXPECT_TRUE(fs::is_symlink(restore_path / root_path.filename() / "symlink_file_1.txt")) << "symlink_file_1.txt is not a symlink!";
+    EXPECT_EQ(fs::read_symlink(restore_path / root_path.filename() / "symlink_file_1.txt"),
+            "regular_file1.txt") << "symlink_file_1.txt does not point to the correct target!";
+
+    // 检查硬链接是否恢复
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "hardlink_file_2.txt")) << "hardlink_file_2.txt not unpacked!";
+    EXPECT_EQ(fs::file_size(restore_path / root_path.filename() / "hardlink_file_2.txt"),
+            fs::file_size(restore_path / root_path.filename() / "regular_file2.txt")) << "hardlink_file_2.txt does not point to the same file as regular_file2.txt!";
+
+    // 检查管道文件是否恢复
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "my_fifo")) << "my_fifo not unpacked!";
+    EXPECT_TRUE(fs::is_fifo(restore_path / root_path.filename() / "my_fifo")) << "my_fifo is not a FIFO!";
+
+    // 检查块设备文件是否恢复
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "block_device_file")) << "block_device_file not unpacked!";
+    EXPECT_TRUE(fs::is_block_file(restore_path / root_path.filename() / "block_device_file")) << "block_device_file is not a block device!";
+
+    // 检查字符设备文件是否恢复
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "char_device_file")) << "char_device_file not unpacked!";
+    EXPECT_TRUE(fs::is_character_file(restore_path / root_path.filename() / "char_device_file")) << "char_device_file is not a character device!";
+
+    // 检查压缩包文件是否恢复
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "large_folder/random_large_file.tar")) << "random_large_file.tar not unpacked!";
+    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "large_folder/random_large_file.tar.gz")) << "random_large_file.tar.gz not unpacked!";
+
+    // 输出验证完成的信息
+    std::cout << "Unpack test completed successfully!" << std::endl;
 }
 
 // 辅助函数：比较文件内容

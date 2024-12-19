@@ -23,7 +23,7 @@ private:
     fs::path backupfile; // 解包文件位置
     std::string password; // 密码
 
-    BackupInfo backupinformation;      // 备份文件信息
+    unsigned char mod;    // 操作模式
     FilterOptions filter; // 过滤条件
 
     std::string comment; //评论信息
@@ -32,8 +32,9 @@ public:
     BackupFunctions(const fs::path &src_path_, const fs::path &dst_path, const fs::path &rst_path_, const fs::path &bkf,
                  std::string comment_, std::string password_ = nullptr);
     ~BackupFunctions();
-
-    void SetBackupInfo(const BackupInfo &backupinformation_);
+    
+    // 设置操作信息
+    void SetMod(unsigned char mod_);
     void SetFilter(const FilterOptions &filteroptions_);
 
     // 获取文件备份信息并验证校验码

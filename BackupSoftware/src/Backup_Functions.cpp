@@ -17,12 +17,8 @@ BackupFunctions::BackupFunctions(const fs::path &src_path_, const fs::path &dst_
 BackupFunctions::~BackupFunctions(){
 }
 
-void BackupFunctions::SetBackupInfo(const BackupInfo &backupinformation_){
-    backupinformation.timestamp = backupinformation_.timestamp;
-    backupinformation.mod = backupinformation_.mod;
-    backupinformation.checksum = backupinformation_.checksum;
-    memcpy(backupinformation.backup_path, backupinformation_.backup_path, MAX_PATH_LEN);
-    memcpy(backupinformation.comment, backupinformation_.comment, COMMENT_SIZE);
+void BackupFunctions::SetMod(unsigned char mod_){
+    mod = mod_;
 }
 void BackupFunctions::SetFilter(const FilterOptions &filteroptions_){
     filter = filteroptions_;
@@ -58,8 +54,8 @@ bool BackupFunctions::CreateBackup(){
     unsigned char flag = 0;
     fs::path dstfile = destination_path / source_path.filename();
     fs::path pakfile = dstfile; pakfile += FILE_SUFFIX_PACK;
-    fs::path cpsfile = dstfile; cpsfile += FILE_SUFFIX_COMPRESS;
-    fs::path eptfile = dstfile; eptfile += FILE_SUFFIX_ENCRYPT;
+    fs::path cpsfile = pakfile; cpsfile += FILE_SUFFIX_COMPRESS;
+    fs::path eptfile = cpsfile; eptfile += FILE_SUFFIX_ENCRYPT;
     // 判断路径是否存在
     if (!fs::exists(source_path))
     {
@@ -77,7 +73,7 @@ bool BackupFunctions::CreateBackup(){
     }
     dstfile = pakfile;
     // 压缩
-    if (backupinformation.mod & MOD_COMPRESS)
+    if (mod & MOD_COMPRESS)
     {
         outinfo.push_back("COMORESSING...");
         Compression compression(pakfile);
@@ -88,11 +84,11 @@ bool BackupFunctions::CreateBackup(){
         }
         fs::remove_all(pakfile);
         dstfile = cpsfile;
-        flag = MOD_COMPRESS;
+        flag |= MOD_COMPRESS;
     }
 
     // 加密
-    if (backupinformation.mod & MOD_ENCRYPT)
+    if (mod & MOD_ENCRYPT)
     {
         outinfo.push_back("ENCRYPTING...");
         Encryption encryption(cpsfile, password);
@@ -103,7 +99,7 @@ bool BackupFunctions::CreateBackup(){
         }
         fs::remove_all(cpsfile);
         dstfile = eptfile;
-        flag = MOD_ENCRYPT;
+        flag |= MOD_ENCRYPT;
     }
 
     BackupInfo nowinfo = {
