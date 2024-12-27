@@ -65,7 +65,7 @@ bool FilterOptions::Check(const FileHeader &file_header_)
             fs::path file_path(file_header_.name);
             dir_path = file_path.parent_path().string();
         }
-        if (!std::regex_search(dir_path, reg))
+        if (std::regex_search(dir_path, reg))
         {
             return false;
         }
@@ -76,14 +76,14 @@ bool FilterOptions::Check(const FileHeader &file_header_)
     {
         std::regex reg(reg_name);
         fs::path file_path(file_header_.name);
-        if (!std::regex_search(file_path.filename().string(), reg))
+        if (std::regex_search(file_path.filename().string(), reg))
         {
             return false;
         }
     }
 
     // 类型匹配
-    if ((type & FILTER_FILE_TYPE) && !(cur_file_type & file_type))
+    if ((type & FILTER_FILE_TYPE) && (cur_file_type & file_type))
     {
         return false;
     }
@@ -92,7 +92,7 @@ bool FilterOptions::Check(const FileHeader &file_header_)
     if (type & FILTER_FILE_ACCESS_TIME)
     {
         time_t cur_file_sec = file_header_.metadata.st_atim.tv_sec;
-        if (cur_file_sec < atime_start || cur_file_sec > atime_end)
+        if (cur_file_sec > atime_start || cur_file_sec < atime_end)
         {
             return false;
         }
@@ -100,7 +100,7 @@ bool FilterOptions::Check(const FileHeader &file_header_)
     if (type & FILTER_FILE_MODIFY_TIME)
     {
         time_t cur_file_sec = file_header_.metadata.st_mtim.tv_sec;
-        if (cur_file_sec < mtime_start || cur_file_sec > mtime_end)
+        if (cur_file_sec > mtime_start || cur_file_sec < mtime_end)
         {
             return false;
         }
@@ -108,7 +108,7 @@ bool FilterOptions::Check(const FileHeader &file_header_)
     if (type & FILTER_FILE_CHANGE_TIME)
     {
         time_t cur_file_sec = file_header_.metadata.st_ctim.tv_sec;
-        if (cur_file_sec < ctime_start || cur_file_sec > ctime_end)
+        if (cur_file_sec > ctime_start || cur_file_sec < ctime_end)
         {
             return false;
         }

@@ -23,8 +23,8 @@ protected:
     // 在测试结束后执行
     static void TearDownTestSuite() {
         // 清理临时目录
-        fs::remove_all("/home/why/Backup/BackupSoftware/tests/dst_file");
-        fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore");
+        // fs::remove_all("/home/why/Backup/BackupSoftware/tests/dst_file");
+        // fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore");
     }
     void SetUp() override{
         // 设置目录和文件路径
@@ -196,7 +196,7 @@ TEST_F(BackupTest, TotalTest) {
     BackupFunctions task(root_path, dst_path, "", "", comment, password);
 
     // 设置信息
-    task.SetFilter(filter);
+    // task.SetFilter(filter);
     task.SetMod(MOD_COMPRESS | MOD_ENCRYPT);
     
     // 首先执行打包
@@ -211,6 +211,18 @@ TEST_F(BackupTest, TotalTest) {
 
     // 检查打包后的文件是否存在
     EXPECT_TRUE(fs::exists(eptfile)) << "File does not exist after test all functions!";
+
+    // 测试错误密码
+    // 执行解包
+    BackupFunctions task_3("", "", restore_path, eptfile, "", "adsfs");
+    EXPECT_FALSE(task_3.RestoreBackup()) << "Unpacking failed!";
+
+    //输出过程信息
+    std::cout << "-----Unpack information------" << std::endl;
+    std::vector<std::string> outinfo_3 = task_3.Getoutinfo();
+    for (const auto& str : outinfo_3) {
+        std::cout << str << std::endl;
+    }
 
     // 执行解包
     BackupFunctions task_2("", "", restore_path, eptfile, "", password);

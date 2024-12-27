@@ -3,14 +3,23 @@
 #define BACKUP_FUNCTIONS_H
 
 #include <string>
-#include "Packer.h"
-#include "Compression.h"
-#include "Encryption.h"
-#include "FilterOptions.h"
+#include <filesystem>
+#include <vector>
+namespace fs = std::filesystem;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+struct BackupInformation
+{
+    time_t timestamp;               // 时间戳
+    char backup_path[256]; // 备份路径
+    char comment[255];     // 描述信息
+    unsigned char mod;              // 压缩加密选项
+    uint32_t checksum;              //校验和
+};
+
 
 // 定义打包和解包接口
 class BackupFunctions {
@@ -24,7 +33,7 @@ private:
     std::string password; // 密码
 
     unsigned char mod;    // 操作模式
-    FilterOptions filter; // 过滤条件
+    // FilterOptions filter; // 过滤条件
 
     std::string comment; //评论信息
     std::vector<std::string> outinfo; // 输出信息
@@ -35,10 +44,10 @@ public:
     
     // 设置操作信息
     void SetMod(unsigned char mod_);
-    void SetFilter(const FilterOptions &filteroptions_);
+    // void SetFilter(const FilterOptions &filteroptions_);
 
     // 获取文件备份信息并验证校验码
-    static bool GetBackupInfo(const fs::path &file_path_, BackupInfo &info_);
+    static bool GetBackupInfo(const fs::path &file_path_, BackupInformation &info_);
     // 获取输出信息
     std::vector<std::string> Getoutinfo();
 

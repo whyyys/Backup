@@ -20,18 +20,18 @@ BackupFunctions::~BackupFunctions(){
 void BackupFunctions::SetMod(unsigned char mod_){
     mod = mod_;
 }
-void BackupFunctions::SetFilter(const FilterOptions &filteroptions_){
-    filter = filteroptions_;
-}
+// void BackupFunctions::SetFilter(const FilterOptions &filteroptions_){
+//     filter = filteroptions_;
+// }
 
 // 获取文件备份信息
-bool BackupFunctions::GetBackupInfo(const fs::path &file_path_, BackupInfo &info_) {
+bool BackupFunctions::GetBackupInfo(const fs::path &file_path_, BackupInformation &info_) {
     std::ifstream file(file_path_, std::ios::binary | std::ios::ate);  // 打开文件（以二进制模式打开，并定位到文件末尾）
     if (!file.is_open()) return false;
     // 获取文件大小
     std::streampos file_size = file.tellg();
     // 计算 BackupInfo 结构体的大小
-    size_t backup_info_size = sizeof(BackupInfo);
+    size_t backup_info_size = sizeof(BackupInformation);
     // 确保文件有至少一个结构体
     if (file_size < backup_info_size) return false;
     // 计算最后一个 BackupInfo 结构体的位置
@@ -65,6 +65,7 @@ bool BackupFunctions::CreateBackup(){
 
     // 打包
     outinfo.push_back("PACKING...");
+    FilterOptions filter;
     Packer packer(source_path, destination_path, filter);
     if (!packer.Pack())
     {
@@ -102,7 +103,7 @@ bool BackupFunctions::CreateBackup(){
         flag |= MOD_ENCRYPT;
     }
 
-    BackupInfo nowinfo = {
+    BackupInformation nowinfo = {
         time(NULL),                // 当前时间戳
         {0},                       // 确保 backup_path 初始化为空字符
         {0},                       // 确保 comment 初始化为空字符
@@ -169,7 +170,7 @@ bool BackupFunctions::RestoreBackup(){
         outinfo.push_back("Error: No such file or directory: " + dofile.string());
         return false;
     }
-    BackupInfo info = {0};
+    BackupInformation info = {0};
     GetBackupInfo(dofile, info);
     fs::path file_path(dofile);
     // 校验文件并删除文件末尾的结构体待解包结束后重新写入
@@ -184,7 +185,7 @@ bool BackupFunctions::RestoreBackup(){
     std::streampos file_size = file_.tellg();
     file_.close();
     // BackupInfo 结构体的大小
-    size_t backup_info_size = sizeof(BackupInfo);
+    size_t backup_info_size = sizeof(BackupInformation);
     // 如果文件大小小于一个结构体的大小，说明没有足够的数据删除
     if (file_size < backup_info_size)
     {
@@ -241,6 +242,15 @@ bool BackupFunctions::RestoreBackup(){
         else if (status == -1)
         {
             outinfo.push_back("Error: Wrong password!");
+            file_path.assign(backupfile);
+            std::ofstream append_file(file_path, std::ios::binary | std::ios::app);
+            if (!append_file)
+            {
+                outinfo.push_back("Restore filechecksum error: file is smaller than a BackupInformation structure!");
+                return false;
+            }
+            append_file.write(reinterpret_cast<const char*>(&info), sizeof(BackupInformation));
+            append_file.close();
             return false;
         }
         fs::remove_all(dofile);
@@ -264,6 +274,7 @@ bool BackupFunctions::RestoreBackup(){
 
     // 解包
     outinfo.push_back("UNPACKING...");
+    FilterOptions filter;
     Packer packer(restore_path, dofile, filter);
     if (!packer.Unpack())
     {
@@ -280,10 +291,10 @@ bool BackupFunctions::RestoreBackup(){
     std::ofstream append_file(file_path, std::ios::binary | std::ios::app);
     if (!append_file)
     {
-        outinfo.push_back("Restore filechecksum error: file is smaller than a BackupInfo structure!");
+        outinfo.push_back("Restore filechecksum error: file is smaller than a BackupInformation structure!");
         return false;
     }
-    append_file.write(reinterpret_cast<const char*>(&info), sizeof(BackupInfo));
+    append_file.write(reinterpret_cast<const char*>(&info), sizeof(BackupInformation));
     append_file.close();
 
     return true;
