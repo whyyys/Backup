@@ -23,8 +23,8 @@ protected:
     // 在测试结束后执行
     static void TearDownTestSuite() {
         // 清理临时目录
-        fs::remove_all("/home/why/Backup/BackupSoftware/tests/dst_file");
-        fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore");
+        // fs::remove_all("/home/why/Backup/BackupSoftware/tests/dst_file");
+        // fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore");
     }
     void SetUp() override{
         // 设置目录和文件路径
@@ -35,11 +35,9 @@ protected:
         eptfile = "/home/why/Backup/BackupSoftware/tests/dst_file/AFolder.pak.cps.ept";
         restore_path = "/home/why/Backup/BackupSoftware/tests/restore";
 
-        filter_regex_ = ".*ignore.*";
         // 初始化 FilterOptions 对象
-        filter = FilterOptions(); // 使用默认构造函数初始化
-        filter.SetNameFilter(filter_regex_);
-
+        filter_regex_ = ".*ignore.*";
+        
         // 创建解包文件夹
         fs::create_directory(restore_path);
     }
@@ -196,7 +194,7 @@ TEST_F(BackupTest, TotalTest) {
     BackupFunctions task(root_path, dst_path, "", "", comment, password);
 
     // 设置信息
-    // task.SetFilter(filter);
+    task.SetFilter(FILTER_FILE_NAME, filter_regex_, 0, 0, 0, 0, 0, 0, 0);
     task.SetMod(MOD_COMPRESS | MOD_ENCRYPT);
     
     // 首先执行打包
@@ -243,6 +241,10 @@ TEST_F(BackupTest, TotalTest) {
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "large_folder/random_large_file")) << "random_large_file not unpacked!";
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "large_folder/random_large_file.tar")) << "random_large_file.tar not unpacked!";
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "large_folder/random_large_file.tar.gz")) << "random_large_file.tar.gz not unpacked!";
+
+    // 检查过滤器是否设置正确
+    EXPECT_FALSE(fs::exists(restore_path / root_path.filename() / "ignore.txt")) << "ignore.txt not ignore!";
+    EXPECT_FALSE(fs::exists(restore_path / root_path.filename() / ".ignore_folder")) << ".ignore_folder not ignore!";
 
     // 检查软链接是否正确恢复
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "symlink_file_1.txt")) << "symlink_file_1.txt not unpacked!";

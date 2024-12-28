@@ -20,9 +20,24 @@ BackupFunctions::~BackupFunctions(){
 void BackupFunctions::SetMod(unsigned char mod_){
     mod = mod_;
 }
-// void BackupFunctions::SetFilter(const FilterOptions &filteroptions_){
-//     filter = filteroptions_;
-// }
+void BackupFunctions:: SetFilter(unsigned char type_,
+                       std::string reg_name_,    // 过滤文件名的正则表达式
+                       unsigned char file_type_, // 过滤文件类型
+                       // 过滤文件时间
+                       time_t atime_start_, time_t atime_end_,
+                       time_t mtime_start_, time_t mtime_end_,
+                       time_t ctime_start_, time_t ctime_end_ )
+{
+    filter.type_ = type_;
+    filter.reg_name_ = reg_name_;
+    filter.file_type_ = file_type_;
+    filter.atime_start_ = atime_start_;
+    filter.atime_end_ = atime_end_;
+    filter.mtime_start_ = mtime_start_; 
+    filter.mtime_end_ = mtime_end_;
+    filter.ctime_start_ = ctime_start_; 
+    filter.ctime_end_ = ctime_end_;
+}
 
 // 获取文件备份信息
 bool BackupFunctions::GetBackupInfo(const fs::path &file_path_, BackupInformation &info_) {
@@ -65,8 +80,13 @@ bool BackupFunctions::CreateBackup(){
 
     // 打包
     outinfo.push_back("PACKING...");
-    FilterOptions filter;
-    Packer packer(source_path, destination_path, filter);
+    FilterOptions filter_;
+    if(filter.type_ & FILTER_FILE_NAME) filter_.SetNameFilter(filter.reg_name_);
+    if(filter.type_ & FILTER_FILE_TYPE) filter_.SetFileType(filter.type_);
+    if(filter.type_ & FILTER_FILE_ACCESS_TIME) filter_.SetAccessTime(filter.atime_start_, filter.atime_end_);
+    if(filter.type_ & FILTER_FILE_MODIFY_TIME) filter_.SetModifyTime(filter.mtime_start_, filter.mtime_end_);
+    if(filter.type_ & FILTER_FILE_CHANGE_TIME) filter_.SetChangeTime(filter.ctime_start_, filter.ctime_end_);
+    Packer packer(source_path, destination_path, filter_);
     if (!packer.Pack())
     {
         outinfo.push_back("Error: Failed to pack file.");
@@ -274,8 +294,8 @@ bool BackupFunctions::RestoreBackup(){
 
     // 解包
     outinfo.push_back("UNPACKING...");
-    FilterOptions filter;
-    Packer packer(restore_path, dofile, filter);
+    FilterOptions filter_;
+    Packer packer(restore_path, dofile, filter_);
     if (!packer.Unpack())
     {
         outinfo.push_back("Error: Failed to unpack file.");
