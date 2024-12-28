@@ -23,8 +23,8 @@ protected:
     // 在测试结束后执行
     static void TearDownTestSuite() {
         // 清理临时目录
-        // fs::remove_all("/home/why/Backup/BackupSoftware/tests/dst_file");
-        // fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore");
+        fs::remove_all("/home/why/Backup/BackupSoftware/tests/dst_file");
+        fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore");
     }
     void SetUp() override{
         // 设置目录和文件路径
