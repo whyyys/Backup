@@ -49,7 +49,7 @@ FileInfo::FileInfo(FileHeader fileheader_)
     {
     case FILE_TYPE_NORMAL:
         // 创建父目录
-        if (!fs::exists(filepath.parent_path())){
+        if (!fs::exists(filepath.parent_path()) && !(filepath.parent_path() == "")){
         fs::create_directories(filepath.parent_path());}
         break;
     case FILE_TYPE_DIRECTORY:

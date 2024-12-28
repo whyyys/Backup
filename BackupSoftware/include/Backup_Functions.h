@@ -39,7 +39,7 @@ private:
     std::vector<std::string> outinfo; // 输出信息
 public:
     BackupFunctions(const fs::path &src_path_, const fs::path &dst_path, const fs::path &rst_path_, const fs::path &bkf,
-                 std::string comment_, std::string password_ = nullptr);
+                 std::string comment_, std::string password_);
     ~BackupFunctions();
     
     // 设置操作信息
@@ -47,7 +47,7 @@ public:
     // void SetFilter(const FilterOptions &filteroptions_);
 
     // 获取文件备份信息并验证校验码
-    static bool GetBackupInfo(const fs::path &file_path_, BackupInformation &info_);
+    bool GetBackupInfo(const fs::path &file_path_, BackupInformation &info_);
     // 获取输出信息
     std::vector<std::string> Getoutinfo();
 

@@ -122,7 +122,7 @@ bool Packer::Pack()
 
 /// @brief 解包
 /// @param root_path 还原路径
-/// @param pack_path  打包文件所在路径
+/// @param pack_path 打包文件所在路径
 /// @return 解包成功返回true
 bool Packer::Unpack(){
     // 检查文件扩展名是否为 .pak
@@ -135,7 +135,6 @@ bool Packer::Unpack(){
 
     // 读取备份信息
     BackupInfo info = bak_file.ReadBackupInfo();
-
     // 使用指定路径解包
     fs::create_directories(root_path);
     fs::current_path(root_path);
