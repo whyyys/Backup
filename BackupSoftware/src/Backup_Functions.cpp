@@ -82,7 +82,7 @@ bool BackupFunctions::CreateBackup(){
     outinfo.push_back("PACKING...");
     FilterOptions filter_;
     if(filter.type_ & FILTER_FILE_NAME) filter_.SetNameFilter(filter.reg_name_);
-    if(filter.type_ & FILTER_FILE_TYPE) filter_.SetFileType(filter.type_);
+    if(filter.type_ & FILTER_FILE_TYPE) filter_.SetFileType(filter.file_type_);
     if(filter.type_ & FILTER_FILE_ACCESS_TIME) filter_.SetAccessTime(filter.atime_start_, filter.atime_end_);
     if(filter.type_ & FILTER_FILE_MODIFY_TIME) filter_.SetModifyTime(filter.mtime_start_, filter.mtime_end_);
     if(filter.type_ & FILTER_FILE_CHANGE_TIME) filter_.SetChangeTime(filter.ctime_start_, filter.ctime_end_);

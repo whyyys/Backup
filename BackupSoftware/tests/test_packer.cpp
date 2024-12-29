@@ -206,7 +206,7 @@ TEST_F(BackupTest, TotalTest) {
     BackupFunctions task(root_path, dst_path, "", "", comment, password);
 
     // 设置信息
-    task.SetFilter(FILTER_FILE_NAME, filter_regex_, 0, 0, 0, 0, 0, 0, 0);
+    task.SetFilter(FILTER_FILE_NAME | FILTER_FILE_TYPE, filter_regex_, FILE_TYPE_SYMBOLIC_LINK, 0, 0, 0, 0, 0, 0);
     task.SetMod(MOD_COMPRESS | MOD_ENCRYPT);
     
     // 首先执行打包
@@ -271,10 +271,11 @@ TEST_F(BackupTest, TotalTest) {
     EXPECT_FALSE(fs::exists(restore_path / root_path.filename() / ".ignore_folder")) << ".ignore_folder not ignore!";
 
     // 检查软链接是否正确恢复
-    EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "symlink_file_1.txt")) << "symlink_file_1.txt not unpacked!";
-    EXPECT_TRUE(fs::is_symlink(restore_path / root_path.filename() / "symlink_file_1.txt")) << "symlink_file_1.txt is not a symlink!";
-    EXPECT_EQ(fs::read_symlink(restore_path / root_path.filename() / "symlink_file_1.txt"),
-            "regular_file1.txt") << "symlink_file_1.txt does not point to the correct target!";
+    // EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "symlink_file_1.txt")) << "symlink_file_1.txt not unpacked!";
+    // EXPECT_TRUE(fs::is_symlink(restore_path / root_path.filename() / "symlink_file_1.txt")) << "symlink_file_1.txt is not a symlink!";
+    // EXPECT_EQ(fs::read_symlink(restore_path / root_path.filename() / "symlink_file_1.txt"),
+    //         "regular_file1.txt") << "symlink_file_1.txt does not point to the correct target!";
+    EXPECT_FALSE(fs::exists(restore_path / root_path.filename() / "symlink_file_1.txt")) << "symlink_file_1.txt unpacked!";
 
     // 检查硬链接是否恢复
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "hardlink_file_2.txt")) << "hardlink_file_2.txt not unpacked!";
