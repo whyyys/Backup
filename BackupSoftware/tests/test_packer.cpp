@@ -180,6 +180,18 @@ TEST_F(BackupTest, EncryptDecryptTest) {
     // 检查文件内容是否一致，假设 `check_file_content()` 是一个用来比较文件内容的函数
     EXPECT_TRUE(check_file_content(cmpfile, bakfile)) << "Decrypted file content mismatch!";
 
+    // 多次解密检验是否破坏文件
+    fs::remove(cmpfile);
+    // 执行解密
+    Encryption decryption_1(eptfile, password);
+    EXPECT_EQ(decryption_1.decrypt(), 0) << "Decryption failed!";
+
+    // 检查解密后的文件是否恢复到原始文件
+    EXPECT_TRUE(fs::exists(cmpfile)) << "Decrypted file does not exist!";
+    
+    // 检查文件内容是否一致，假设 `check_file_content()` 是一个用来比较文件内容的函数
+    EXPECT_TRUE(check_file_content(cmpfile, bakfile)) << "Decrypted file content mismatch!";
+
     std::cout << "Eecryption and decryption test completed successfully!" << std::endl;
 }
 
@@ -212,13 +224,13 @@ TEST_F(BackupTest, TotalTest) {
 
     // 测试错误密码
     // 执行解包
-    BackupFunctions task_3("", "", restore_path, eptfile, "", "adsfs");
-    EXPECT_FALSE(task_3.RestoreBackup()) << "Unpacking failed!";
+    BackupFunctions task_4("", "", restore_path, eptfile, "", "adsfs");
+    EXPECT_FALSE(task_4.RestoreBackup()) << "Unpacking failed!";
 
     //输出过程信息
     std::cout << "-----Unpack information------" << std::endl;
-    std::vector<std::string> outinfo_3 = task_3.Getoutinfo();
-    for (const auto& str : outinfo_3) {
+    std::vector<std::string> outinfo_4 = task_4.Getoutinfo();
+    for (const auto& str : outinfo_4) {
         std::cout << str << std::endl;
     }
 
@@ -232,7 +244,19 @@ TEST_F(BackupTest, TotalTest) {
     for (const auto& str : outinfo_2) {
         std::cout << str << std::endl;
     }
-    
+    //再次解包查看是否损坏源文件
+    fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore/AFolder");
+    // 执行解包
+    BackupFunctions task_3("", "", restore_path, eptfile, "", password);
+    EXPECT_TRUE(task_3.RestoreBackup()) << "Unpacking failed!";
+
+    //输出过程信息
+    std::cout << "-----Unpack information------" << std::endl;
+    std::vector<std::string> outinfo_3 = task_3.Getoutinfo();
+    for (const auto& str : outinfo_3) {
+        std::cout << str << std::endl;
+    }
+
     // 检查文件是否恢复到原始位置
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "regular_file1.txt")) << "regular_file1.txt not unpacked!";
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "regular_file2.txt")) << "regular_file2.txt not unpacked!";

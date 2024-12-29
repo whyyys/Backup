@@ -245,6 +245,15 @@ bool BackupFunctions::RestoreBackup(){
     if(info.checksum != checksum)
     {
         outinfo.push_back("Error: Check filechecksum error!");
+        file_path.assign(backupfile);
+        std::ofstream append_file(file_path, std::ios::binary | std::ios::app);
+        if (!append_file)
+            {
+                outinfo.push_back("Can't write back to file!");
+                return false;
+            }
+        append_file.write(reinterpret_cast<const char*>(&info), sizeof(BackupInformation));
+        append_file.close();
         return false;
     }
 
@@ -257,6 +266,15 @@ bool BackupFunctions::RestoreBackup(){
         if (status == -2)
         {
             outinfo.push_back("Error: Failed to decrypt file.");
+            file_path.assign(backupfile);
+            std::ofstream append_file(file_path, std::ios::binary | std::ios::app);
+            if (!append_file)
+            {
+                outinfo.push_back("Can't write back to file!");
+                return false;
+            }
+            append_file.write(reinterpret_cast<const char*>(&info), sizeof(BackupInformation));
+            append_file.close();
             return false;
         }
         else if (status == -1)
@@ -266,14 +284,14 @@ bool BackupFunctions::RestoreBackup(){
             std::ofstream append_file(file_path, std::ios::binary | std::ios::app);
             if (!append_file)
             {
-                outinfo.push_back("Restore filechecksum error: file is smaller than a BackupInformation structure!");
+                outinfo.push_back("Can't write back to file!");
                 return false;
             }
             append_file.write(reinterpret_cast<const char*>(&info), sizeof(BackupInformation));
             append_file.close();
             return false;
         }
-        fs::remove_all(dofile);
+        // fs::remove_all(dofile);
         dofile.replace_extension("");
     }
 
@@ -285,6 +303,15 @@ bool BackupFunctions::RestoreBackup(){
         if (!compression.decompress())
         {
             outinfo.push_back("Error: Failed to decompress file.");
+            file_path.assign(backupfile);
+            std::ofstream append_file(file_path, std::ios::binary | std::ios::app);
+            if (!append_file)
+            {
+                outinfo.push_back("Can't write back to file!");
+                return false;
+            }
+            append_file.write(reinterpret_cast<const char*>(&info), sizeof(BackupInformation));
+            append_file.close();
             return false;
         }
         if (info.mod & MOD_ENCRYPT)
@@ -299,6 +326,15 @@ bool BackupFunctions::RestoreBackup(){
     if (!packer.Unpack())
     {
         outinfo.push_back("Error: Failed to unpack file.");
+        file_path.assign(backupfile);
+        std::ofstream append_file(file_path, std::ios::binary | std::ios::app);
+        if (!append_file)
+        {
+            outinfo.push_back("Can't write back to file!");
+            return false;
+        }
+        append_file.write(reinterpret_cast<const char*>(&info), sizeof(BackupInformation));
+        append_file.close();
         return false;
     }
     if (info.mod & MOD_COMPRESS)
@@ -311,7 +347,7 @@ bool BackupFunctions::RestoreBackup(){
     std::ofstream append_file(file_path, std::ios::binary | std::ios::app);
     if (!append_file)
     {
-        outinfo.push_back("Restore filechecksum error: file is smaller than a BackupInformation structure!");
+        outinfo.push_back("Can't write back to file!");
         return false;
     }
     append_file.write(reinterpret_cast<const char*>(&info), sizeof(BackupInformation));
