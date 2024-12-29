@@ -132,7 +132,7 @@ bool BackupFunctions::CreateBackup(){
     };
     // 安全地拷贝路径和评论
     memcpy(nowinfo.comment, comment.c_str(), std::min(sizeof(nowinfo.comment), comment.length()));
-    memcpy(nowinfo.backup_path, dstfile.string().c_str(), std::min(sizeof(nowinfo.backup_path), dstfile.string().length()));
+    memcpy(nowinfo.backup_path, source_path.string().c_str(), std::min(sizeof(nowinfo.backup_path), dstfile.string().length()));
     nowinfo.mod = flag;  // 压缩加密选项
 
     //生成文件校验码
