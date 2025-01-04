@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>795</width>
+    <height>584</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Backup</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QStackedWidget" name="stackedWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>60</y>
+      <width>771</width>
+      <height>511</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="page_backup">
+     <widget class="QLabel" name="label_backup">
+      <property name="geometry">
+       <rect>
+        <x>670</x>
+        <y>440</y>
+        <width>101</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Backup Page</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::AutoText</enum>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>141</width>
+        <height>128</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QLabel" name="label_choose_backuppath">
+         <property name="text">
+          <string>选择待备份路径：</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_choose_destination">
+         <property name="text">
+          <string>将备份文件存储到：</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="label_options">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>190</y>
+        <width>191</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>备份选项（压缩 / 加密）：</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit_password">
+      <property name="geometry">
+       <rect>
+        <x>430</x>
+        <y>230</y>
+        <width>241</width>
+        <height>29</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>200</x>
+        <y>190</y>
+        <width>61</width>
+        <height>71</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QCheckBox" name="checkBox_compress">
+         <property name="text">
+          <string>压缩</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBox_encrypt">
+         <property name="text">
+          <string>加密</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="label_info">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>230</y>
+        <width>171</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>如加密，请设置密码：</string>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="textBrowser">
+      <property name="geometry">
+       <rect>
+        <x>120</x>
+        <y>270</y>
+        <width>571</width>
+        <height>121</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_rprocessinfo">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>260</y>
+        <width>101</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>过程信息输出：</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_run">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>420</y>
+        <width>89</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>启动备份</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_comment">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>190</y>
+        <width>101</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>设置备注信息：</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit_comment">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>190</y>
+        <width>281</width>
+        <height>29</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_filter">
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>150</y>
+        <width>181</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>过滤器设置</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_filter">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>141</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>需要忽略掉的文件：</string>
+      </property>
+     </widget>
+     <widget class="QToolButton" name="toolButton_choose_floder">
+      <property name="geometry">
+       <rect>
+        <x>561</x>
+        <y>41</y>
+        <width>89</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>选择文件夹</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit_backuppath">
+      <property name="geometry">
+       <rect>
+        <x>151</x>
+        <y>41</y>
+        <width>404</width>
+        <height>29</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QToolButton" name="toolButton_shoose_file">
+      <property name="geometry">
+       <rect>
+        <x>656</x>
+        <y>41</y>
+        <width>104</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>选择单个文件</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit_dstpath">
+      <property name="geometry">
+       <rect>
+        <x>151</x>
+        <y>101</y>
+        <width>404</width>
+        <height>29</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QToolButton" name="toolButton_dstfloder">
+      <property name="geometry">
+       <rect>
+        <x>561</x>
+        <y>101</y>
+        <width>89</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>选择文件夹</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_restore">
+     <widget class="QLabel" name="label_restore">
+      <property name="geometry">
+       <rect>
+        <x>670</x>
+        <y>440</y>
+        <width>101</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="layoutDirection">
+       <enum>Qt::LeftToRight</enum>
+      </property>
+      <property name="text">
+       <string>Restore Page</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_rprocessinfo_2">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>240</y>
+        <width>101</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>过程信息输出：</string>
+      </property>
+     </widget>
+     <widget class="QTextBrowser" name="textBrowser_2">
+      <property name="geometry">
+       <rect>
+        <x>140</x>
+        <y>250</y>
+        <width>571</width>
+        <height>121</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QWidget" name="verticalLayoutWidget_3">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>141</width>
+        <height>128</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QLabel" name="label_choose_destination_2">
+         <property name="text">
+          <string>选取备份文件：</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_choose_backuppath_2">
+         <property name="text">
+          <string>选择解包路径：</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="label_unpackpassword">
+      <property name="geometry">
+       <rect>
+        <x>30</x>
+        <y>190</y>
+        <width>241</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>输入加密密码（如未加密请忽略）：</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit_password_2">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>200</y>
+        <width>241</width>
+        <height>29</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_unpack">
+      <property name="geometry">
+       <rect>
+        <x>350</x>
+        <y>420</y>
+        <width>89</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>解包备份</string>
+      </property>
+     </widget>
+     <widget class="QToolButton" name="toolButton_shoose_file_2">
+      <property name="geometry">
+       <rect>
+        <x>556</x>
+        <y>61</y>
+        <width>104</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>选择备份文件</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit_backuppath_2">
+      <property name="geometry">
+       <rect>
+        <x>151</x>
+        <y>61</y>
+        <width>399</width>
+        <height>29</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit_dstpath_2">
+      <property name="geometry">
+       <rect>
+        <x>151</x>
+        <y>121</y>
+        <width>399</width>
+        <height>29</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QToolButton" name="toolButton_dstfloder_2">
+      <property name="geometry">
+       <rect>
+        <x>556</x>
+        <y>121</y>
+        <width>104</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>选择解包目录</string>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_information">
+     <widget class="QLabel" name="label_information">
+      <property name="geometry">
+       <rect>
+        <x>640</x>
+        <y>440</y>
+        <width>131</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Information Page</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>60</y>
+        <width>141</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>选择要查看的目录：</string>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="tableWidget">
+      <property name="geometry">
+       <rect>
+        <x>20</x>
+        <y>110</y>
+        <width>711</width>
+        <height>271</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="pushButton_unpack_2">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>420</y>
+        <width>101</width>
+        <height>25</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>查看备份信息</string>
+      </property>
+     </widget>
+     <widget class="QToolButton" name="toolButton_dstfloder_3">
+      <property name="geometry">
+       <rect>
+        <x>586</x>
+        <y>61</y>
+        <width>104</width>
+        <height>29</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>选择查看目录</string>
+      </property>
+     </widget>
+     <widget class="QTextEdit" name="textEdit_dstpath_3">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>181</x>
+        <y>61</y>
+        <width>399</width>
+        <height>29</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="horizontalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>348</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton_backup">
+       <property name="text">
+        <string>创建备份</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_restore">
+       <property name="text">
+        <string>恢复文件</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_information">
+       <property name="text">
+        <string>备份文件信息</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
