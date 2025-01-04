@@ -47,6 +47,14 @@
 * CMake 9.4.0 或更高版本
 * OpenSSL库（用于 AES 加密和解密）
 
+## 生成测试文件
+
+```bash
+cd ./tests
+chmod +x TestFileMake.sh
+sudo ./TestFileMake.sh
+```
+
 ## 后端库构建步骤
 
 ``` bash
@@ -68,7 +76,6 @@ sudo ./runTest
 通过 BackupFunctions 类进行备份，设置备份文件的路径和描述信息，并选择是否加密或压缩。
 
 具体代码细节可参考`tests/test_packer.cpp`
-
 
 
 
