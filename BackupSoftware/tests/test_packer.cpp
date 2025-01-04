@@ -23,17 +23,22 @@ protected:
     // 在测试结束后执行
     static void TearDownTestSuite() {
         // 清理临时目录
-        fs::remove_all("/home/why/Backup/BackupSoftware/tests/dst_file");
-        fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore");
+        fs::remove_all(fs::canonical(fs::current_path() / "../tests") / "dst_file");
+        fs::remove_all(fs::canonical(fs::current_path() / "../tests") / "restore");
     }
     void SetUp() override{
+        cur = fs::current_path();
+        // 拼接 '../test' 路径
+        fs::path new_path = cur / "../tests";
+        // 获取绝对路径并规范化，消除 '..'
+        fs::path absolute_path = fs::canonical(new_path);
         // 设置目录和文件路径
-        root_path = "/home/why/Backup/BackupSoftware/tests/AFolder";
-        dst_path = "/home/why/Backup/BackupSoftware/tests/dst_file";
-        pakfile = "/home/why/Backup/BackupSoftware/tests/dst_file/AFolder.pak";
-        cmpfile = "/home/why/Backup/BackupSoftware/tests/dst_file/AFolder.pak.cps";
-        eptfile = "/home/why/Backup/BackupSoftware/tests/dst_file/AFolder.pak.cps.ept";
-        restore_path = "/home/why/Backup/BackupSoftware/tests/restore";
+        root_path = absolute_path / "AFolder";
+        dst_path = absolute_path / "dst_file";
+        pakfile = absolute_path / "dst_file/AFolder.pak";
+        cmpfile = absolute_path / "dst_file/AFolder.pak.cps";
+        eptfile = absolute_path / "dst_file/AFolder.pak.cps.ept";
+        restore_path = absolute_path / "restore";
 
         // 初始化 FilterOptions 对象
         filter_regex_ = ".*ignore.*";
@@ -42,7 +47,7 @@ protected:
         fs::create_directory(restore_path);
     }
     void TearDown() override{
-
+        fs::current_path(cur);
     }
 
     // 需要测试的路径和 FilterOptions
@@ -52,6 +57,7 @@ protected:
     std::filesystem::path cmpfile;
     std::filesystem::path eptfile;
     std::filesystem::path restore_path;
+    std::filesystem::path cur;
     FilterOptions filter;
     std::string filter_regex_;
 };
@@ -69,7 +75,6 @@ TEST_F(BackupTest, PackUnpackTest) {
     // 执行解包
     Packer packer1(restore_path, pakfile, filter);
     EXPECT_TRUE(packer1.Unpack()) << "Unpacking failed!";
-    
     // 检查文件是否恢复到原始位置
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "regular_file1.txt")) << "regular_file1.txt not unpacked!";
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "regular_file2.txt")) << "regular_file2.txt not unpacked!";
@@ -198,8 +203,8 @@ TEST_F(BackupTest, EncryptDecryptTest) {
 // 测试整体封装功能
 TEST_F(BackupTest, TotalTest) {
     // 清理临时目录
-    fs::remove_all("/home/why/Backup/BackupSoftware/tests/dst_file");
-    fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore/AFolder");
+    fs::remove_all("../tests/dst_file");
+    fs::remove_all("../tests/restore/AFolder");
 
     std::string comment = "Test all functions.";
     std::string password = randomPassword(8);
@@ -245,7 +250,7 @@ TEST_F(BackupTest, TotalTest) {
         std::cout << str << std::endl;
     }
     //再次解包查看是否损坏源文件
-    fs::remove_all("/home/why/Backup/BackupSoftware/tests/restore/AFolder");
+    fs::remove_all("./AFolder");
     // 执行解包
     BackupFunctions task_3("", "", restore_path, eptfile, "", password);
     EXPECT_TRUE(task_3.RestoreBackup()) << "Unpacking failed!";
@@ -256,7 +261,6 @@ TEST_F(BackupTest, TotalTest) {
     for (const auto& str : outinfo_3) {
         std::cout << str << std::endl;
     }
-
     // 检查文件是否恢复到原始位置
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "regular_file1.txt")) << "regular_file1.txt not unpacked!";
     EXPECT_TRUE(fs::exists(restore_path / root_path.filename() / "regular_file2.txt")) << "regular_file2.txt not unpacked!";
