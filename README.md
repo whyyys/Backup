@@ -3,6 +3,37 @@
 
 本项目包含了 **备份应用程序** 和相关软件组件的源代码。该应用程序用于管理备份及相关任务。
 
+## 项目检查
+
+！！！检查项目完成情况，请从这里开始
+
+1. 克隆仓库
+
+```bash
+git clone https://github.com/whyyys/Backup.git
+```
+
+2. 创建测试文件
+
+```bash
+chmod +x ./TestFileMake.sh
+# 创建设备文件需要提权
+# 这会在你当前目录下创建AFloder文件夹用于测试程序功能
+sudo ./TestFileMask.sh 
+```
+
+3. 为程序添加可执行权限
+
+```bash
+chmod +x BackUpApp-x86_64.AppImage
+```
+
+4. 开始你的检查（某些设备文件创建需要root权限，请使用命令行打开BackUpApp-x86_64.AppImage可执行程序）
+
+``` bash
+sudo ./BackUpApp-x86_64.AppImage
+```
+
 ## 项目结构
 
 项目结构如下：
